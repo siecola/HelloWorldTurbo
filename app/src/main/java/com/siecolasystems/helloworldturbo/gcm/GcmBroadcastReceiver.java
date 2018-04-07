@@ -37,22 +37,47 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             Bundle extras = intent.getExtras();
 
-            Gson gson = new Gson();
-
             if (extras.containsKey("product")) {
                 String productStr = extras.getString("product");
                 if (productStr != null) {
+                    Gson gson = new Gson();
                     ProductInfo productInfo = gson.fromJson(productStr,
                             ProductInfo.class);
-                    sendNotification(productInfo);
+                    sendProductNotification(productInfo);
                 }
-
+            } else if (extras.containsKey("salesMessage")) {
+                String salesMessage = extras.getString("salesMessage");
+                if (salesMessage != null) {
+                    sendSalesNotification(salesMessage);
+                }
             }
         }
         setResultCode(Activity.RESULT_OK);
     }
 
-    private void sendNotification(ProductInfo productInfo) {
+    private void sendSalesNotification(String salesMessage) {
+        mNotificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("salesMessage", salesMessage);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder mBuilder = new Notification.Builder(
+                context)
+                //FIXME - change for a proper icon
+                .setSmallIcon(R.drawable.ic_warning_black_24dp)
+                .setAutoCancel(true)
+                .setContentTitle("Siecola Vendas")
+                .setStyle(new Notification.BigTextStyle().bigText("Sales message"))
+                .setContentText("Message received!");
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    private void sendProductNotification(ProductInfo productInfo) {
         mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 

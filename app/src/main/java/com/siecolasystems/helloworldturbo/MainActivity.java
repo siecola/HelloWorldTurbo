@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ProductInfo productInfo;
+    private String salesMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,11 @@ public class MainActivity extends AppCompatActivity
             productInfo = (ProductInfo) intent.
                     getSerializableExtra("productInfo");
             if (productInfo != null) {
+                displayFragment(R.id.nav_gcm);
+            }
+        } else if (intent.hasExtra("salesMessage")) {
+            salesMessage = intent.getStringExtra("salesMessage");
+            if (salesMessage != null) {
                 displayFragment(R.id.nav_gcm);
             }
         } else if (savedInstanceState == null) {
@@ -77,6 +83,11 @@ public class MainActivity extends AppCompatActivity
             productInfo = (ProductInfo) intent.
                     getSerializableExtra("productInfo");
             if (productInfo != null) {
+                displayFragment(R.id.nav_gcm);
+            }
+        } else if (intent.hasExtra("salesMessage")) {
+            salesMessage = intent.getStringExtra("salesMessage");
+            if (salesMessage != null) {
                 displayFragment(R.id.nav_gcm);
             }
         }
@@ -151,6 +162,11 @@ public class MainActivity extends AppCompatActivity
                         args.putSerializable("productInfo", productInfo);
                         fragment.setArguments(args);
                         productInfo = null;
+                    } else if (salesMessage != null) {
+                        Bundle args = new Bundle();
+                        args.putString("salesMessage", salesMessage);
+                        fragment.setArguments(args);
+                        salesMessage = null;
                     }
                     break;
                 case R.id.nav_settings:

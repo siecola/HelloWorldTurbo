@@ -44,7 +44,7 @@ public class GCMFragment extends Fragment implements GCMRegisterEvents {
     private TextView txtProductPrice;
 
     private ProductInfo productInfo;
-
+    private String salesMessage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,17 +86,29 @@ public class GCMFragment extends Fragment implements GCMRegisterEvents {
         }
 
         Bundle bundle = this.getArguments();
-        if ((bundle != null) && (bundle.containsKey("productInfo"))) {
-            productInfo = (ProductInfo) bundle.getSerializable(
-                    "productInfo");
+        if (bundle != null) {
+            if (bundle.containsKey("productInfo")) {
+                productInfo = (ProductInfo) bundle.getSerializable(
+                        "productInfo");
 
-            txtProductId.setText(productInfo.getProductID());
-            txtProductName.setText(productInfo.getModel());
-            txtProductModel.setText(productInfo.getModel());
-            txtProductCode.setText(Integer.toString(
-                    productInfo.getCode()));
-            txtProductPrice.setText(Float.toString(
-                    productInfo.getPrice()));
+                txtProductId.setText(productInfo.getProductID());
+                txtProductName.setText(productInfo.getModel());
+                txtProductModel.setText(productInfo.getModel());
+                txtProductCode.setText(Integer.toString(
+                        productInfo.getCode()));
+                txtProductPrice.setText(Float.toString(
+                        productInfo.getPrice()));
+                bundle.remove("productInfo");
+            } else if (bundle.containsKey("salesMessage")) {
+                salesMessage = bundle.getString("salesMessage");
+
+                txtProductId.setText("Sales message");
+                txtProductName.setText(salesMessage);
+                txtProductModel.setText("");
+                txtProductCode.setText("");
+                txtProductPrice.setText("");
+                bundle.remove("salesMessage");
+            }
         }
 
         btnRegister.setOnClickListener(new OnClickListener() {
